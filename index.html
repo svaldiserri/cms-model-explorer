@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMS Model Explorer 2025-2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0f1a;
+  --surface: #111827;
+  --surface-2: #1a2235;
+  --surface-3: #243049;
+  --border: #2a3550;
+  --text: #e8ecf4;
+  --text-muted: #8899b4;
+  --accent: #38bdf8;
+  --accent-glow: rgba(56, 189, 248, 0.15);
+  --green: #34d399;
+  --amber: #fbbf24;
+  --rose: #fb7185;
+  --violet: #a78bfa;
+  --orange: #fb923c;
+  --teal: #2dd4bf;
+  --pink: #f472b6;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+.grain {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+header {
+  padding: 48px 40px 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+}
+
+header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 40px;
+  right: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+
+.header-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+h1 {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+}
+
+.header-sub {
+  font-size: 15px;
+  color: var(--text-muted);
+  max-width: 680px;
+  line-height: 1.7;
+}
+
+.header-meta {
+  display: flex;
+  gap: 24px;
+  margin-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.header-meta span { display: flex; align-items: center; gap: 6px; }
+.header-meta .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+
+/* Navigation */
+.nav-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10, 15, 26, 0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+}
+
+.nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.nav-inner::-webkit-scrollbar { display: none; }
+
+.nav-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 14px 18px;
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.nav-btn:hover { color: var(--text); }
+.nav-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* Main content */
+.main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 40px 80px;
+}
+
+/* Model Grid */
+.model-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.model-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+
+.model-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--card-accent, var(--accent));
+}
+
+.model-card:hover {
+  border-color: var(--card-accent, var(--accent));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.model-card.active {
+  border-color: var(--card-accent, var(--accent));
+  background: var(--surface-2);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.card-acronym {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--card-accent, var(--accent));
+}
+
+.card-status {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(52, 211, 153, 0.1);
+  color: var(--green);
+}
+
+.card-status.upcoming {
+  background: rgba(251, 191, 36, 0.1);
+  color: var(--amber);
+}
+
+.card-status.proposed {
+  background: rgba(167, 139, 250, 0.1);
+  color: var(--violet);
+}
+
+.card-name {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.card-desc {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.card-tag {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: var(--surface-3);
+  color: var(--text-muted);
+}
+
+/* Detail Panel */
+.detail-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0;
+  margin-bottom: 32px;
+  overflow: hidden;
+  display: none;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.detail-panel.visible { display: block; }
+
+.detail-header {
+  padding: 28px 32px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-title-group { flex: 1; }
+
+.detail-acronym {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.detail-fullname {
+  font-size: 15px;
+  color: var(--text-muted);
+}
+
+.detail-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--surface-3);
+  border: none;
+  color: var(--text-muted);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.detail-close:hover { background: var(--border); color: var(--text); }
+
+.detail-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.detail-section {
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--border);
+}
+
+.detail-section:nth-child(even) {
+  border-left: 1px solid var(--border);
+}
+
+.detail-section-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.detail-section-value {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+.detail-section-value strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.detail-full {
+  grid-column: 1 / -1;
+}
+
+.detail-full:nth-child(even) {
+  border-left: none;
+}
+
+/* Key metrics row */
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.metric-item {
+  padding: 20px 24px;
+  border-right: 1px solid var(--border);
+  text-align: center;
+}
+
+.metric-item:last-child { border-right: none; }
+
+.metric-value {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.metric-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Stacking section */
+.stacking-visual {
+  padding: 32px;
+  background: var(--surface-2);
+}
+
+.stack-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+
+.stack-diagram {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stack-layer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-left: 3px solid var(--layer-color, var(--accent));
+}
+
+.stack-layer:hover {
+  background: var(--surface-3);
+  border-color: var(--layer-color, var(--accent));
+}
+
+.stack-layer .layer-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--layer-color, var(--accent));
+  min-width: 100px;
+}
+
+.stack-layer .layer-desc {
+  color: var(--text-muted);
+  font-size: 12.5px;
+}
+
+.stack-connector {
+  width: 2px;
+  height: 16px;
+  background: var(--border);
+  margin-left: 48px;
+  position: relative;
+}
+
+.stack-connector::after {
+  content: '↓';
+  position: absolute;
+  left: -6px;
+  top: -2px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* Filter bar */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.filter-chip {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-chip:hover { border-color: var(--accent); color: var(--text); }
+.filter-chip.active {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Timeline section */
+.timeline {
+  position: relative;
+  padding-left: 32px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent), var(--violet), var(--rose));
+}
+
+.timeline-item {
+  position: relative;
+  padding: 0 0 32px 24px;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -28px;
+  top: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.timeline-dot.past { background: var(--text-muted); box-shadow: none; }
+.timeline-dot.upcoming { background: var(--amber); box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2); }
+
+.timeline-date {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.timeline-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.timeline-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* Comparison table */
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.compare-table th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 2px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  z-index: 5;
+}
+
+.compare-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+.compare-table tr:hover td { background: var(--surface-2); }
+
+.compare-table .model-link {
+  color: var(--accent);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.compare-table .model-link:hover { text-decoration: underline; }
+
+/* Section titles */
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.section-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  max-width: 600px;
+}
+
+/* Tab sections */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Footer */
+.footer {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 40px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.footer a { color: var(--accent); text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  header, .main, .footer { padding-left: 20px; padding-right: 20px; }
+  header::after { left: 20px; right: 20px; }
+  .nav-bar { padding: 0 20px; }
+  .model-grid { grid-template-columns: 1fr; }
+  .detail-body { grid-template-columns: 1fr; }
+  .detail-section:nth-child(even) { border-left: none; }
+  .metrics-row { grid-template-columns: repeat(2, 1fr); }
+  .metric-item { border-bottom: 1px solid var(--border); }
+  h1 { font-size: 24px; }
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<header>
+  <div class="header-eyebrow">CMS Innovation Center</div>
+  <h1>CMS/CMMI Model Explorer</h1>
+  <p class="header-sub">Interactive guide to every major CMS Innovation Center model announced in 2025-2026. Click any model for full details including payment mechanics, timelines, eligibility, and how models stack together.</p>
+  <div class="header-meta">
+    <span><span class="dot"></span> 12 Active & Announced Models</span>
+    <span>Updated April 2026</span>
+    <span>Data: CMS.gov, CMS Innovation Center, Federal Register</span>
+  </div>
+</header>
+
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <button class="nav-btn active" data-tab="explorer">Model Explorer</button>
+    <button class="nav-btn" data-tab="compare">Comparison Table</button>
+    <button class="nav-btn" data-tab="timeline">Timeline</button>
+    <button class="nav-btn" data-tab="conditions">Condition Crosswalk</button>
+    <button class="nav-btn" data-tab="landscape">Model Landscape</button>
+    <button class="nav-btn" data-tab="resources">Resource Matrix</button>
+  </div>
+</nav>
+
+<main class="main">
+
+  <!-- TAB: Explorer -->
+  <div class="tab-content active" id="tab-explorer">
+    <div style="margin-bottom:6px;font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)">Filter by Role</div>
+    <div class="filter-bar">
+      <button class="filter-chip active" data-filter="all">All Models</button>
+      <button class="filter-chip" data-filter="role-aco">ACO Operator</button>
+      <button class="filter-chip" data-filter="role-digital">Digital Health Company</button>
+      <button class="filter-chip" data-filter="role-hospital">Hospital / Health System</button>
+      <button class="filter-chip" data-filter="role-specialist">Specialist Physician</button>
+      <button class="filter-chip" data-filter="role-primarycare">Primary Care Practice</button>
+      <button class="filter-chip" data-filter="role-pharma">Drug Manufacturer</button>
+      <button class="filter-chip" data-filter="role-state">State Medicaid Agency</button>
+      <button class="filter-chip" data-filter="role-investor">Investor / VC</button>
+      <button class="filter-chip" data-filter="role-device">Device Manufacturer</button>
+    </div>
+    <div style="margin-bottom:6px;margin-top:8px;font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)">Jump to Model</div>
+    <div class="filter-bar" id="model-shortcuts"></div>
+
+    <div class="detail-panel" id="detail-panel"></div>
+    <div class="model-grid" id="model-grid"></div>
+  </div>
+
+  <!-- TAB: Compare -->
+  <div class="tab-content" id="tab-compare">
+    <h2 class="section-title">Side-by-Side Comparison</h2>
+    <p class="section-desc">All 12 models at a glance. Click any model name to jump to the full profile in the Explorer tab.</p>
+    <div style="overflow-x: scroll; -webkit-overflow-scrolling: touch; background: var(--surface); border-radius: 12px; border: 1px solid var(--border); max-height: 80vh; overflow-y: auto;">
+      <table class="compare-table" id="compare-table" style="min-width: 1200px;"></table>
+    </div>
+  </div>
+
+  <!-- TAB: Timeline -->
+  <div class="tab-content" id="tab-timeline">
+    <h2 class="section-title">Model Launch Timeline</h2>
+    <p class="section-desc">When each model launches, key application deadlines, and milestone dates through 2036.</p>
+    <div class="timeline" id="timeline"></div>
+  </div>
+
+  <!-- TAB: Condition Crosswalk -->
+  <div class="tab-content" id="tab-conditions">
+    <h2 class="section-title">Condition Crosswalk</h2>
+    <p class="section-desc">Select a condition to see every CMS model that touches it, what each model does about it, and where they overlap.</p>
+    <div class="filter-bar" id="condition-buttons"></div>
+    <div id="condition-results" style="margin-top:24px"></div>
+  </div>
+
+  <!-- TAB: Model Landscape -->
+  <div class="tab-content" id="tab-landscape">
+    <h2 class="section-title">Model Landscape Map</h2>
+    <p class="section-desc">Visual grid showing all models organized by who participates and what the model targets. Find where you fit.</p>
+    <div id="landscape-grid"></div>
+  </div>
+
+  <!-- TAB: Resources -->
+  <div class="tab-content" id="tab-resources">
+    <h2 class="section-title">Resource Matrix</h2>
+    <p class="section-desc">Every CMS link, RFA, factsheet, FAQ, and resource organized by model and category. Click any link to open on CMS.gov.</p>
+    <div id="resource-matrix"></div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <p>Created by <a href="https://www.linkedin.com/in/steve-valdiserri/" target="_blank">Steve Valdiserri</a> · Avanti Strategy Group · April 2026</p>
+  <p style="margin-top: 6px;">Data sourced from <a href="https://www.cms.gov/priorities/innovation/models" target="_blank">CMS.gov</a>, CMS Innovation Center, Federal Register notices, and CMS press releases. For informational purposes only — not legal or financial advice. Model details are subject to change as CMS finalizes rules and application processes.</p>
+</footer>
+
+<script>
+const models = [
+  {
+    id:'access', acronym:'ACCESS', name:'Advancing Chronic Care with Effective, Scalable Solutions',
+    status:'active', statusLabel:'Launching Jul 2026', color:'#38bdf8', categories:['chronic','tech'],
+    healthProblems:'Hypertension, Type 2 Diabetes, Chronic Kidney Disease, High Cholesterol, Chronic MSK Pain, Depression, Anxiety',
+    oneLiner:'Outcome-aligned payments for technology-enabled chronic disease management in Original Medicare.',
+    description:'A 10-year voluntary model that pays for outcomes, not visits. Over 150 organizations approved — including Noom, WHOOP, Headspace, Verily, Aledade, and dozens of digital health startups. First time in Medicare\'s 60+ year history that non-traditional providers can bill Medicare directly at this scale.',
+    duration:'July 5, 2026 – June 30, 2036 (10 years)', participants:'150+ accepted (applications extended to May 15, 2026)',
+    notableParticipants:'Noom, WHOOP Physician Services, Headspace, Verily Health, Aledade, Weight Watchers, Withings Medical Group, Concert Health, Slingshot AI (Ash), HealthTap, Story Health Partners, DocGo, Devoted Medical, Welldoc, Nudj Health, Foodsmart, NourishedRx, Headway, Jimini Health, Limbic, JOGO Health, Bold, Plethy, TailorCare, Livara, RightMove Health, Redefine Healthcare, Cadence, and 120+ more',
+    eligibility:'Technology-enabled care organizations, digital health companies, traditional providers, telehealth platforms. Must complete Medicare Part B enrollment.',
+    paymentModel:'Monthly outcome-aligned payments per beneficiary. Not fee-for-service. Performance measured on clinical outcomes across four tracks.',
+    tracks:'Early Cardiometabolic (eCKM), Cardiometabolic (CKM), Musculoskeletal (MSK), Behavioral Health (BH)',
+    keyDates:'Application deadline: May 15, 2026 (for July launch) | Rolling applications through 2033 | Jan 1, 2027 start for late applicants',
+    cmsLinks:[
+      {label:'CMS Model Homepage',url:'https://www.cms.gov/priorities/innovation/innovation-models/access',cat:'Overview'},
+      {label:'Request for Applications (RFA)',url:'https://www.cms.gov/priorities/innovation/files/access-rfa.pdf',cat:'Applications'},
+      {label:'Accepted Applicants List',url:'https://www.cms.gov/priorities/innovation/access-model-accepted-applicants',cat:'Participants'},
+      {label:'Technical FAQs',url:'https://www.cms.gov/priorities/innovation/access-technical-frequently-asked-questions',cat:'FAQs'}
+    ],
+    keyFacts:[{label:'Participants',value:'150+'},{label:'Duration',value:'10 Years'},{label:'Tracks',value:'4'},{label:'Launch',value:'Jul 2026'}],
+    connections:['TEMPO provides FDA regulatory pathway for ACCESS devices','LEAD ACOs can overlap — same patient in both models','BALANCE GLP-1 coverage supports ACCESS cardiometabolic patients','MAHA ELEVATE trials may validate interventions that scale through ACCESS']
+  },
+  {
+    id:'tempo', acronym:'TEMPO', name:'Technology Evaluation for Medicare Products and Oversight',
+    status:'active', statusLabel:'Active', color:'#2dd4bf', categories:['tech','chronic'],
+    healthProblems:'Supports ACCESS conditions via digital health device regulatory pathways',
+    oneLiner:'FDA regulatory companion to ACCESS — enforcement discretion for digital health devices while collecting real-world evidence.',
+    description:'Breaks the chicken-and-egg problem between FDA clearance and clinical deployment. Up to 40 digital health device manufacturers can deploy under enforcement discretion while collecting real-world evidence.',
+    duration:'Aligned with ACCESS model (10 years)', participants:'Up to 40 manufacturers',
+    eligibility:'Digital health device manufacturers whose products support ACCESS model clinical tracks.',
+    paymentModel:'Not a payment model — regulatory pathway. Manufacturers submit real-world data during participation.',
+    tracks:'N/A — supports all ACCESS tracks', keyDates:'Statements of interest accepted starting Jan 2, 2026',
+    cmsLinks:[
+      {label:'CMS Model Homepage (via ACCESS)',url:'https://www.cms.gov/priorities/innovation/innovation-models/access',cat:'Overview'},
+      {label:'Federal Register Notice (PDF)',url:'https://public-inspection.federalregister.gov/2025-22190.pdf',cat:'Regulations'},
+      {label:'FDA TEMPO Pilot FAQs',url:'https://www.fda.gov/medical-devices/digital-health-center-excellence/tempo-digital-health-devices-pilot-frequently-asked-questions',cat:'FAQs'}
+    ],
+    keyFacts:[{label:'Manufacturers',value:'Up to 40'},{label:'Type',value:'Regulatory'},{label:'Paired With',value:'ACCESS'},{label:'Status',value:'Active'}],
+    connections:['Direct companion to ACCESS — devices used by ACCESS participants','Enables connected devices (wearables, remote monitoring) to enter Medicare']
+  },
+  {
+    id:'maha-elevate', acronym:'MAHA ELEVATE', name:'Making America Healthy Again — Evidence for Lifestyle Evaluation and Value-Based Treatment Expansion',
+    status:'upcoming', statusLabel:'Sep 2026 Start', color:'#34d399', categories:['chronic'],
+    healthProblems:'Chronic disease prevention via lifestyle medicine, nutrition, physical activity interventions',
+    oneLiner:'$100M in cooperative agreements funding clinical trials of lifestyle and functional medicine interventions in Medicare.',
+    description:'Thirty organizations (up to 15 each year) will receive up to $3.3M each to run federally administered clinical trials of lifestyle and functional medicine interventions. Nutrition or physical activity required. Randomization required.',
+    duration:'September 1, 2026 – TBD', participants:'Up to 30 organizations (2 cohorts of 15)',
+    eligibility:'Organizations capable of running clinical trials with nutrition or physical activity components.',
+    paymentModel:'Cooperative agreements — up to $3.3M per organization. Research funding, not a payment model.',
+    tracks:'N/A — research focused', keyDates:'Cohort 1 applications close May 15, 2026 | Model begins Sep 1, 2026',
+    cmsLinks:[
+      {label:'CMS Model Homepage',url:'https://www.cms.gov/priorities/innovation/innovation-models/maha-elevate',cat:'Overview'},
+      {label:'Grants.gov Funding Opportunity',url:'https://grants.gov/search-results-detail/361494',cat:'Applications'}
+    ],
+    keyFacts:[{label:'Total Funding',value:'$100M'},{label:'Per Org',value:'$3.3M'},{label:'Organizations',value:'30'},{label:'App Deadline',value:'May 15'}],
+    connections:['Trials may validate interventions that scale through ACCESS','Results inform future BALANCE lifestyle platform requirements','Complements LEAD ACO prevention and quality plans']
+  },
+  {
+    id:'lead', acronym:'LEAD', name:'Long-term Enhanced ACO Design',
+    status:'upcoming', statusLabel:'Jan 2027 Start', color:'#a78bfa', categories:['aco'],
+    healthProblems:'Total cost of care — all chronic conditions, complex care needs, dual-eligible populations, homebound beneficiaries',
+    oneLiner:'Next-generation ACO model replacing ACO REACH. 10-year performance period with no benchmark rebasing.',
+    description:'CMS\'s most ambitious ACO initiative. Replaces ACO REACH (ending Dec 31, 2026). Features historically-based benchmarks with no rebasing, expanded eligibility for small/rural/independent providers, monthly capitated payment options, beneficiary incentives for healthy behaviors, and Prevention and Quality Plans. Risk-sharing at 50% or 100%. Payment mechanisms: Total Cost of Care (TCC), Primary Care Capitation (PCC), and Non-Primary Care Capitation (NPCC).',
+    duration:'January 1, 2027 – December 31, 2036 (10 years)', participants:'TBD — applications open. 74 current ACO REACH participants eligible to transition.',
+    eligibility:'Current REACH ACOs, MSSP ACOs, Medicare FFS providers new to ACOs, providers serving underserved populations.',
+    paymentModel:'Shared savings/losses with 50% or 100% risk-sharing. TCC, PCC, and NPCC payment options. Benchmarks never rebased.',
+    tracks:'Risk Options: 50% or 100% shared savings/losses | Payment Mechanisms: Total Cost of Care (TCC), Primary Care Capitation (PCC), Non-Primary Care Capitation (NPCC)',
+    keyDates:'RFA released March 2026 | Applications due May 17, 2026 | Implementation Sep-Dec 2026 | Launch Jan 1, 2027',
+    cmsLinks:[
+      {label:'CMS Model Homepage',url:'https://www.cms.gov/priorities/innovation/innovation-models/lead',cat:'Overview'},
+      {label:'Request for Applications (RFA)',url:'https://www.cms.gov/priorities/innovation/files/lead-rfa.pdf',cat:'Applications'},
+      {label:'LEAD Model Value Factsheet (PDF)',url:'https://www.cms.gov/priorities/innovation/files/lead-model-value-factsheet.pdf',cat:'Factsheets'},
+      {label:'LEAD Model Overview Factsheet (PDF)',url:'https://www.cms.gov/priorities/innovation/files/lead-model-overview-factsheet.pdf',cat:'Factsheets'},
+      {label:'LEAD Model Overview Webinar Slides (PDF)',url:'https://www.cms.gov/priorities/innovation/files/lead-model-overview-slides.pdf',cat:'Webinars'},
+      {label:'LEAD Model Overview Webinar Transcript (PDF)',url:'https://www.cms.gov/priorities/innovation/files/lead-model-overview-trans.pdf',cat:'Webinars'},
+      {label:'LEAD Model Overview (PDF)',url:'https://www.cms.gov/priorities/innovation/files/lead-model-overview.pdf',cat:'Overview'},
+      {label:'CMS Innovation Insight',url:'https://www.cms.gov/priorities/innovation/innovation-insight-cms-invites-acos-apply-new-lead-model',cat:'Overview'},
+      {label:'ACO REACH (predecessor) Participants',url:'https://www.cms.gov/priorities/innovation/innovation-models/aco-reach',cat:'Participants'}
+    ],
+    keyFacts:[{label:'Duration',value:'10 Years'},{label:'Risk Options',value:'50/100%'},{label:'Replaces',value:'ACO REACH'},{label:'Launch',value:'Jan 2027'}],
+    connections:['ACOs can fully overlap with ACCESS — same beneficiary in both','Prevention and Quality Plans align with MAHA ELEVATE research','Beneficiary healthy behavior incentives connect to BALANCE lifestyle programs','TEAM surgical episodes can layer on LEAD total cost of care']
+  },
+  {
+    id:'balance', acronym:'BALANCE', name:'Better Approaches to Lifestyle and Nutrition for Comprehensive Health',
+    status:'active', statusLabel:'Active (Medicaid)', color:'#fb923c', categories:['drug','chronic'],
+    healthProblems:'Obesity, Type 2 Diabetes, Cardiovascular Disease, Metabolic Syndrome — via GLP-1 medications + lifestyle support',
+    oneLiner:'CMS-negotiated GLP-1 coverage for Medicare and Medicaid with mandatory manufacturer-funded lifestyle support.',
+    description:'CMS negotiates drug pricing with GLP-1 manufacturers on behalf of states and Part D plans. Every beneficiary receiving GLP-1s gets a manufacturer-funded lifestyle support program — nutrition and physical activity mandatory. Medicare Part D beneficiaries access GLP-1s at $50/month through a bridge demonstration starting July 2026.',
+    duration:'Through December 2031', participants:'Manufacturers, State Medicaid agencies, Medicare Part D plans',
+    eligibility:'Manufacturers marketing eligible GLP-1 products. State Medicaid agencies (rolling May-Dec 2026). Part D plans (Jan 2027).',
+    paymentModel:'CMS-negotiated pricing. Beneficiary copay: $50/month under Medicare bridge. Manufacturers fund lifestyle platforms.',
+    tracks:'N/A', keyDates:'Manufacturer RFA due Jan 8, 2026 | Medicaid launch May 2026 | Medicare GLP-1 Bridge Jul 2026 | Part D launch Jan 2027',
+    cmsLinks:[
+      {label:'CMS Model Homepage',url:'https://www.cms.gov/priorities/innovation/innovation-models/balance',cat:'Overview'},
+      {label:'Press Release: BALANCE Model',url:'https://www.cms.gov/newsroom/press-releases/cms-launches-voluntary-model-expand-access-life-changing-medicines-promote-healthier-living',cat:'Press'},
+      {label:'CMS Innovation Insight',url:'https://www.cms.gov/priorities/innovation/innovation-insight-affordability-glp-1s-takes-next-step-balance-model-rfas',cat:'Overview'},
+      {label:'Manufacturer RFA (PDF)',url:'https://www.cms.gov/priorities/innovation/files/balance-mfr-rfa.pdf',cat:'Applications'},
+      {label:'State Medicaid RFA (PDF)',url:'https://www.cms.gov/priorities/innovation/files/balance-state-rfa.pdf',cat:'Applications'},
+      {label:'Part D Sponsor RFA (PDF)',url:'https://www.cms.gov/priorities/innovation/files/balance-partd-rfa.pdf',cat:'Applications'}
+    ],
+    keyFacts:[{label:'Beneficiary Cost',value:'$50/mo'},{label:'Medicaid',value:'May 2026'},{label:'Medicare',value:'Jul 2026'},{label:'Part D',value:'Jan 2027'}],
+    connections:['Lifestyle platforms mirror ACCESS chronic disease management','GLP-1 patients in LEAD ACOs benefit from coordinated cardiometabolic care','MAHA ELEVATE may test specific lifestyle interventions used in BALANCE']
+  },
+  {
+    id:'guard', acronym:'GUARD', name:'Generating Unprecedented Affordability for Rare Diseases and Drugs',
+    status:'proposed', statusLabel:'Proposed Rule', color:'#fb7185', categories:['drug'],
+    healthProblems:'High drug costs — Medicare Part D prescription drug affordability',
+    oneLiner:'International pricing benchmarks to lower Medicare Part D drug costs through modified inflation rebates.',
+    description:'Uses international reference pricing to calculate modified inflation rebates for Medicare Part D drugs. Part of CMS\'s broader drug pricing strategy alongside BALANCE and GENEROUS.',
+    duration:'TBD — proposed rule stage', participants:'Drug manufacturers',
+    eligibility:'Manufacturers of drugs covered under Medicare Part D.',
+    paymentModel:'Modified inflation rebates calculated using international pricing benchmarks.',
+    tracks:'N/A', keyDates:'Comment period closed Feb 23, 2026 | Final rule pending',
+    cmsLinks:[
+      {label:'CMS Model Homepage',url:'https://www.cms.gov/priorities/innovation/innovation-models/guard',cat:'Overview'},
+      {label:'Press Release: GUARD Model',url:'https://www.cms.gov/newsroom/press-releases/cms-announces-guard-model',cat:'Press'},
+      {label:'Notice of Proposed Rulemaking',url:'https://www.federalregister.gov/documents/2025/12/30/2025-30328/medicare-program-guard-model',cat:'Regulations'}
+    ],
+    keyFacts:[{label:'Program',value:'Part D'},{label:'Mechanism',value:'Rebates'},{label:'Stage',value:'Proposed'},{label:'Status',value:'Pending'}],
+    connections:['Complements BALANCE by reducing costs of GLP-1s and chronic disease drugs','Works alongside GENEROUS for Medicaid-side drug pricing']
+  },
+  {
+    id:'generous', acronym:'GENEROUS', name:'Generating Exceptional National Efficiencies Reducing Overpriced Unnecessary Spending',
+    status:'active', statusLabel:'Active', color:'#f472b6', categories:['drug'],
+    healthProblems:'High drug costs — Medicaid prescription drug affordability',
+    oneLiner:'International pricing-based supplemental rebates for Medicaid drug spending.',
+    description:'Five-year voluntary model for manufacturers and states using international reference pricing for supplemental Medicaid drug rebates.',
+    duration:'5 years (2026-2031)', participants:'Drug manufacturers and State Medicaid agencies',
+    eligibility:'Voluntary for manufacturers and states.',
+    paymentModel:'Supplemental rebates on top of existing Medicaid drug rebates using international pricing benchmarks.',
+    tracks:'N/A', keyDates:'Model launched 2026',
+    cmsLinks:[
+      {label:'CMS Model Homepage',url:'https://www.cms.gov/priorities/innovation/innovation-models/generous',cat:'Overview'},
+      {label:'Manufacturer RFA (PDF)',url:'https://www.cms.gov/priorities/innovation/files/generous-rfa.pdf',cat:'Applications'},
+      {label:'Press Release: Manufacturer RFA Extension',url:'https://www.cms.gov/newsroom/press-releases/cms-generous-model-rfa-extension',cat:'Press'},
+      {label:'State Medicaid LOI',url:'https://www.cms.gov/priorities/innovation/files/generous-state-loi.pdf',cat:'Applications'}
+    ],
+    keyFacts:[{label:'Duration',value:'5 Years'},{label:'Program',value:'Medicaid'},{label:'Type',value:'Voluntary'},{label:'Status',value:'Active'}],
+    connections:['Medicaid counterpart to GUARD (Medicare Part D)','Drug cost reductions support BALANCE GLP-1 access']
+  },
+  {
+    id:'team', acronym:'TEAM', name:'Transforming Episode Accountability Model',
+    status:'active', statusLabel:'Active Jan 2026', color:'#fbbf24', categories:['payment'],
+    healthProblems:'Surgical episodes — CABG, Joint Replacement, Major Bowel Procedures, Hip/Femur Fracture, Spinal Fusion',
+    oneLiner:'Mandatory episode-based payment for five surgical categories in selected metro areas.',
+    description:'Mandatory model testing bundled episode payments for five surgical categories. Selected hospitals in specific metro areas must participate. Allows full overlap with ACOs.',
+    duration:'January 1, 2026 – December 31, 2030 (5 years)', participants:'Selected hospitals in mandatory metro areas',
+    eligibility:'Mandatory for acute care hospitals in selected geographic areas.',
+    paymentModel:'Episode-based bundled payments with upside and downside risk.',
+    tracks:'CABG, Lower Extremity Joint Replacement, Major Bowel, Surgical Hip/Femur Fracture, Spinal Fusion',
+    keyDates:'Launched January 1, 2026',
+    cmsLinks:[
+      {label:'CMS Model Homepage',url:'https://www.cms.gov/priorities/innovation/innovation-models/team-model',cat:'Overview'},
+      {label:'TEAM Overview Slides (PDF)',url:'https://www.cms.gov/priorities/innovation/files/team-overview-slides.pdf',cat:'Webinars'},
+      {label:'Participant List (XLSX)',url:'https://www.cms.gov/priorities/innovation/files/team-participant-list.xlsx',cat:'Participants'},
+      {label:'TEAM Portal User Guide (PDF)',url:'https://www.cms.gov/priorities/innovation/files/team-portal-user-guide.pdf',cat:'Technical'},
+      {label:'Custom Export Tool User Guide (PDF)',url:'https://www.cms.gov/priorities/innovation/files/team-custom-export-tool-user-guide.pdf',cat:'Technical'},
+      {label:'Preliminary Target Prices PY1',url:'https://www.cms.gov/priorities/innovation/files/team-preliminary-target-prices-py1.pdf',cat:'Financial'},
+      {label:'Risk Adjustment & Target Price Specs (PDF)',url:'https://www.cms.gov/priorities/innovation/files/team-risk-adj-target-price-specs.pdf',cat:'Technical'},
+      {label:'Clinical Episode Construction Specs (PDF)',url:'https://www.cms.gov/priorities/innovation/files/team-clinical-episode-specs.pdf',cat:'Technical'},
+      {label:'Community Deprivation Index Specs (PDF)',url:'https://www.cms.gov/priorities/innovation/files/team-cdi-specs.pdf',cat:'Technical'},
+      {label:'TEAM Exclusion List - PY1',url:'https://www.cms.gov/priorities/innovation/files/team-exclusion-list-py1.pdf',cat:'Technical'},
+      {label:'TEAM DRG Mapping Specifications',url:'https://www.cms.gov/priorities/innovation/files/team-drg-mapping-specs.pdf',cat:'Technical'},
+      {label:'Participation Tracks Fact Sheet (PDF)',url:'https://www.cms.gov/files/document/team-participation-tracks-fact-sheet.pdf',cat:'Factsheets'}
+    ],
+    keyFacts:[{label:'Categories',value:'5'},{label:'Type',value:'Mandatory'},{label:'Duration',value:'5 Years'},{label:'Status',value:'Active'}],
+    connections:['Full overlap allowed with LEAD and MSSP ACOs','Surgical episodes for patients also in ACCESS chronic disease management','WISeR prior authorization covers some TEAM-adjacent procedures']
+  },
+  {
+    id:'ahead', acronym:'AHEAD', name:'Achieving Healthcare Efficiency through Accountable Design',
+    status:'active', statusLabel:'Active', color:'#2dd4bf', categories:['payment'],
+    healthProblems:'Total population health — state-level cost of care, health equity, primary care investment',
+    oneLiner:'State-level total cost of care model with hospital global budgets and multi-payer alignment.',
+    description:'Multi-payer model across 6 participating states (MD, CT, HI, VT, RI, NY) through 2035. Hospitals receive global budgets. Requires Medicare, Medicaid, and commercial payer alignment.',
+    duration:'Through December 31, 2035', participants:'6 states: Maryland, Connecticut, Hawaii, Vermont, Rhode Island, New York',
+    eligibility:'State-level model — requires state government participation and multi-payer alignment.',
+    paymentModel:'Hospital global budgets with total cost of care accountability. Multi-payer alignment required.',
+    tracks:'N/A — state-level implementation', keyDates:'Active | Cohorts 2 & 3 begin Jan 1, 2028 | Up to 2 new states may join Jul 2026',
+    cmsLinks:[
+      {label:'CMS Model Homepage',url:'https://www.cms.gov/priorities/innovation/innovation-models/ahead',cat:'Overview'},
+      {label:'AHEAD Participant Resources',url:'https://www.cms.gov/priorities/innovation/innovation-models/ahead/participant-resources',cat:'Participants'},
+      {label:'Frequently Asked Questions',url:'https://www.cms.gov/priorities/innovation/innovation-models/ahead/faqs',cat:'FAQs'},
+      {label:'Geo AHEAD Fact Sheet (PDF)',url:'https://www.cms.gov/priorities/innovation/files/geo-ahead-fact-sheet.pdf',cat:'Factsheets'},
+      {label:'Innovation Insight: AHEAD Model Changes (Sep 2025)',url:'https://www.cms.gov/priorities/innovation/innovation-insight-ahead-model-changes',cat:'Overview'}
+    ],
+    keyFacts:[{label:'States',value:'6'},{label:'Type',value:'Multi-Payer'},{label:'Through',value:'2035'},{label:'Mechanism',value:'Global Budget'}],
+    connections:['LEAD ACOs operate within AHEAD state frameworks','Global budgets incentivize prevention — aligns with ACCESS and BALANCE']
+  },
+  {
+    id:'asm', acronym:'ASM', name:'Accountable Specialty Model',
+    status:'upcoming', statusLabel:'Start 2027', color:'#a78bfa', categories:['payment'],
+    healthProblems:'Heart Failure, Low Back Pain — specialist accountability for cost and outcomes',
+    oneLiner:'Mandatory specialist accountability for heart failure and low back pain in selected regions.',
+    description:'First Innovation Center model holding specialists directly accountable for cost and quality outcomes. Mandatory in selected geographic regions starting 2027. Performance measured against specialty peers.',
+    duration:'Starting 2027', participants:'Heart failure and low back pain specialists in selected regions. Participant list now available.',
+    eligibility:'Mandatory for qualifying specialists in selected metropolitan areas.',
+    paymentModel:'Specialist-level total cost of care accountability. Performance benchmarked against specialty peers.',
+    tracks:'Heart Failure, Low Back Pain', keyDates:'Launch 2027',
+    cmsLinks:[
+      {label:'CMS Model Homepage',url:'https://www.cms.gov/priorities/innovation/innovation-models/asm',cat:'Overview'},
+      {label:'ASM Mandatory Geographic Areas',url:'https://www.cms.gov/priorities/innovation/files/asm-mandatory-geo-areas.pdf',cat:'Participants'},
+      {label:'ASM Participant Dataset',url:'https://www.cms.gov/priorities/innovation/files/asm-participant-dataset.xlsx',cat:'Participants'},
+      {label:'ASM Participant Roadmap',url:'https://www.cms.gov/priorities/innovation/files/asm-participant-roadmap.pdf',cat:'Participants'},
+      {label:'ASM Overview Webcast Slides',url:'https://www.cms.gov/priorities/innovation/files/asm-overview-slides.pdf',cat:'Webinars'},
+      {label:'Frequently Asked Questions',url:'https://www.cms.gov/priorities/innovation/files/asm-faqs.pdf',cat:'FAQs'},
+      {label:'ASM Model Fact Sheet (PDF)',url:'https://www.cms.gov/priorities/innovation/files/asm-fact-sheet.pdf',cat:'Factsheets'},
+      {label:'ASM Model Infographic (PDF)',url:'https://www.cms.gov/priorities/innovation/files/asm-infographic.pdf',cat:'Factsheets'},
+      {label:'Press Release: 2026 PFS Final Rule',url:'https://www.cms.gov/newsroom/press-releases/cms-2026-pfs-final-rule',cat:'Press'},
+      {label:'2026 PFS Final Rule (Federal Register)',url:'https://www.federalregister.gov/documents/2025/11/18/2025-23400/medicare-pfs-2026',cat:'Regulations'},
+      {label:'ASM Participant List',url:'https://www.cms.gov/priorities/innovation/files/asm-participant-list.xlsx',cat:'Participants'},
+      {label:'ASM Participant Contact Info Form',url:'https://www.cms.gov/priorities/innovation/files/asm-contact-form.pdf',cat:'Participants'}
+    ],
+    keyFacts:[{label:'Specialties',value:'2'},{label:'Type',value:'Mandatory'},{label:'Launch',value:'2027'},{label:'Benchmark',value:'Peer-Based'}],
+    connections:['MSK track in ACCESS addresses chronic pain upstream','TEAM surgical episodes for related procedures','LEAD ACOs coordinate primary care for ASM patients']
+  },
+  {
+    id:'wiser', acronym:'WISeR', name:'Wasteful and Inappropriate Service Reduction',
+    status:'active', statusLabel:'Active Jan 2026', color:'#fb7185', categories:['tech','payment'],
+    healthProblems:'Fraud, waste, abuse — skin substitutes, nerve stimulator implants, knee arthroscopy, spinal fusion, epidural steroid injections',
+    oneLiner:'AI/ML-powered prior authorization review for traditional Medicare in six states.',
+    description:'First Innovation Center model where technology companies are the only participants. AI and ML plus human clinical review. Operating in AZ, NJ, OH, OK, TX, WA. Decisions within 72 hours (48 expedited). Gold carding planned mid-2026.',
+    duration:'January 1, 2026 – December 31, 2031 (6 years)', participants:'Third-party technology vendors contracted by CMS',
+    eligibility:'Technology companies as model participants. FFS providers in 6 states functionally required to comply.',
+    paymentModel:'Prior authorization and prepayment review. Does not change Medicare coverage policy.',
+    tracks:'13 procedure categories including skin substitutes, nerve stimulators, knee arthroscopy, spinal fusion',
+    keyDates:'Launched Jan 1, 2026 | PA required Jan 15, 2026+ | Gold carding mid-2026',
+    cmsLinks:[
+      {label:'CMS Model Homepage',url:'https://www.cms.gov/priorities/innovation/innovation-models/wiser',cat:'Overview'},
+      {label:'Model FAQs',url:'https://www.cms.gov/priorities/innovation/files/document/wiser-model-frequently-asked-questions',cat:'FAQs'},
+      {label:'CMS Press Release',url:'https://www.cms.gov/newsroom/press-releases/cms-launches-new-model-target-wasteful-inappropriate-services-original-medicare',cat:'Press'},
+      {label:'Federal Register Notice',url:'https://www.federalregister.gov/documents/2025/07/01/2025-12195/medicare-program-implementation-of-prior-authorization-for-select-services-for-the-wasteful-and',cat:'Regulations'}
+    ],
+    keyFacts:[{label:'States',value:'6'},{label:'Procedures',value:'13'},{label:'Duration',value:'6 Years'},{label:'Decision Time',value:'72 hrs'}],
+    connections:['Covers procedures overlapping with TEAM surgical categories and ASM','Tech-first approach mirrors ACCESS model philosophy']
+  },
+  {
+    id:'aspire', acronym:'ASPIRE', name:'Advancing System Performance, Integration, and Resilience for Kids',
+    status:'proposed', statusLabel:'NOFO Expected 2026', color:'#2dd4bf', categories:['payment'],
+    healthProblems:'Pediatric complex care — children with chronic/complex medical needs in Medicaid/CHIP',
+    oneLiner:'Pediatric Medicaid/CHIP model for children with complex needs.',
+    description:'Upcoming model focused on improving care coordination and outcomes for children with complex medical needs in Medicaid and CHIP. Up to five states. Details pending NOFO release.',
+    duration:'TBD', participants:'Up to 5 states',
+    eligibility:'State Medicaid/CHIP agencies serving children with complex needs.',
+    paymentModel:'TBD — details pending NOFO release', tracks:'Pediatric complex care', keyDates:'NOFO expected 2026',
+    cmsLinks:[
+      {label:'CMS Model Homepage',url:'https://www.cms.gov/priorities/innovation/innovation-models/aspire',cat:'Overview'},
+      {label:'Journey Map',url:'https://www.cms.gov/priorities/innovation/files/aspire-journey-map.pdf',cat:'Overview'},
+      {label:'Integrated Care for Kids Model (predecessor)',url:'https://www.cms.gov/priorities/innovation/innovation-models/integrated-care-for-kids',cat:'Overview'}
+    ],
+    keyFacts:[{label:'Population',value:'Pediatric'},{label:'Program',value:'Medicaid/CHIP'},{label:'States',value:'Up to 5'},{label:'Stage',value:'Pre-Launch'}],
+    connections:['Only pediatric-focused model in the current CMMI portfolio','State-level implementation parallels AHEAD model structure']
+  }
+];
+
+// Render model cards with health problems shown
+function renderGrid(filter='all') {
+  const grid=document.getElementById('model-grid');
+  const filtered=filter==='all'?models:models.filter(m=>{
+    if(filter.startsWith('role-'))return m.roles&&m.roles.includes(filter);
+    if(['active','upcoming','proposed'].includes(filter))return m.status===filter;
+    return m.categories.includes(filter);
+  });
+  // Show role relevance note if filtering by role
+  const roleLabel=filter.startsWith('role-')?`<div style="margin-bottom:16px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:13px;color:var(--text-muted)"><strong style="color:var(--accent)">Showing ${filtered.length} model${filtered.length!==1?'s':''}</strong> relevant to this role. Click any model for full details.</div>`:'';
+  grid.innerHTML=roleLabel+filtered.map(m=>`
+    <div class="model-card" data-id="${m.id}" style="--card-accent:${m.color}">
+      <div class="card-header">
+        <span class="card-acronym">${m.acronym}</span>
+        <span class="card-status ${m.status}">${m.statusLabel}</span>
+      </div>
+      <div class="card-name">${m.name}</div>
+      <div class="card-desc">${m.oneLiner}</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:8px;line-height:1.5"><strong style="color:var(--text);font-size:10px;text-transform:uppercase;letter-spacing:1px;font-family:var(--font-mono)">Addresses:</strong> ${m.healthProblems}</div>
+      <div class="card-tags">${m.categories.map(c=>`<span class="card-tag">${c}</span>`).join('')}</div>
+    </div>
+  `).join('');
+  grid.querySelectorAll('.model-card').forEach(c=>c.addEventListener('click',()=>showDetail(c.dataset.id)));
+}
+
+function showDetail(id) {
+  const m=models.find(x=>x.id===id);
+  const panel=document.getElementById('detail-panel');
+  document.querySelectorAll('.model-card').forEach(c=>c.classList.remove('active'));
+  const ac=document.querySelector(`.model-card[data-id="${id}"]`);
+  if(ac)ac.classList.add('active');
+
+  // Group links by category
+  const cats={};
+  (m.cmsLinks||[]).forEach(l=>{const c=l.cat||'Other';if(!cats[c])cats[c]=[];cats[c].push(l);});
+  let linksHtml='';
+  for(const[cat,links]of Object.entries(cats)){
+    linksHtml+=`<div style="margin-bottom:12px"><div style="font-size:10px;font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:4px">${cat}</div>`;
+    links.forEach(l=>{linksHtml+=`<div style="margin-bottom:4px">📄 <a href="${l.url}" target="_blank" style="color:var(--text);text-decoration:none;border-bottom:1px solid var(--border)">${l.label}</a></div>`;});
+    linksHtml+=`</div>`;
+  }
+
+  const participantsHtml=m.notableParticipants?`<div class="detail-section detail-full"><div class="detail-section-label">Notable Accepted Participants</div><div class="detail-section-value" style="font-size:13px">${m.notableParticipants}</div></div>`:'';
+
+  panel.innerHTML=`
+    <div class="detail-header">
+      <div class="detail-title-group">
+        <div class="detail-acronym" style="color:${m.color}">${m.acronym}</div>
+        <div class="detail-fullname">${m.name}</div>
+      </div>
+      <button class="detail-close" id="close-detail">✕</button>
+    </div>
+    <div class="metrics-row">
+      ${m.keyFacts.map(f=>`<div class="metric-item"><div class="metric-value" style="color:${m.color}">${f.value}</div><div class="metric-label">${f.label}</div></div>`).join('')}
+    </div>
+    <div class="detail-body">
+      <div class="detail-section detail-full"><div class="detail-section-label">Overview</div><div class="detail-section-value">${m.description}</div></div>
+      <div class="detail-section"><div class="detail-section-label">Health Problems Addressed</div><div class="detail-section-value">${m.healthProblems}</div></div>
+      <div class="detail-section"><div class="detail-section-label">Payment Model</div><div class="detail-section-value">${m.paymentModel}</div></div>
+      <div class="detail-section"><div class="detail-section-label">Duration</div><div class="detail-section-value">${m.duration}</div></div>
+      <div class="detail-section"><div class="detail-section-label">Participants</div><div class="detail-section-value">${m.participants}</div></div>
+      <div class="detail-section"><div class="detail-section-label">Eligibility</div><div class="detail-section-value">${m.eligibility}</div></div>
+      <div class="detail-section"><div class="detail-section-label">Key Dates</div><div class="detail-section-value">${m.keyDates}</div></div>
+      ${participantsHtml}
+      <div class="detail-section detail-full"><div class="detail-section-label">CMS Resources & Links</div><div class="detail-section-value">${linksHtml}</div></div>
+      <div class="detail-section detail-full"><div class="detail-section-label">Tracks / Categories</div><div class="detail-section-value">${m.tracks}</div></div>
+      <div class="detail-section detail-full"><div class="detail-section-label">Model Connections</div><div class="detail-section-value">${m.connections.map(c=>`<div style="margin-bottom:6px">→ ${c}</div>`).join('')}</div></div>
+    </div>
+  `;
+  panel.classList.add('visible');
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('close-detail').addEventListener('click',()=>{
+    panel.classList.remove('visible');
+    document.querySelectorAll('.model-card').forEach(c=>c.classList.remove('active'));
+  });
+}
+
+// Comparison table — fixed to show all models including ACCESS
+function renderCompare() {
+  const table=document.getElementById('compare-table');
+  table.innerHTML=`
+    <thead><tr>
+      <th style="min-width:160px">Model</th><th>Status</th><th>Launch</th><th>Duration</th>
+      <th style="min-width:200px">Payment Model</th><th style="min-width:200px">Health Problems Addressed</th><th>Participants</th>
+    </tr></thead>
+    <tbody>
+      ${models.map(m=>`<tr>
+        <td><span class="model-link" data-id="${m.id}" style="color:${m.color};cursor:pointer;font-weight:600">${m.acronym}</span><br><span style="font-size:11px;color:var(--text-muted)">${m.name}</span></td>
+        <td><span class="card-status ${m.status}" style="display:inline-block">${m.statusLabel}</span></td>
+        <td style="font-family:var(--font-mono);font-size:12px">${m.keyFacts.find(f=>['Launch','Status','Stage','Medicaid'].includes(f.label))?.value||'—'}</td>
+        <td style="font-size:12px">${m.duration.split('(')[0].trim()}</td>
+        <td style="font-size:12px">${m.paymentModel.length>140?m.paymentModel.substring(0,140)+'...':m.paymentModel}</td>
+        <td style="font-size:11.5px;color:var(--text-muted)">${m.healthProblems}</td>
+        <td style="font-size:12px">${m.participants}</td>
+      </tr>`).join('')}
+    </tbody>`;
+  table.querySelectorAll('.model-link').forEach(l=>l.addEventListener('click',()=>{
+    document.querySelector('.nav-btn[data-tab="explorer"]').click();
+    setTimeout(()=>showDetail(l.dataset.id),100);
+  }));
+}
+
+// Resource Matrix tab
+function renderResourceMatrix() {
+  const allCats=new Set();
+  models.forEach(m=>(m.cmsLinks||[]).forEach(l=>allCats.add(l.cat||'Other')));
+  const cats=[...allCats].sort();
+  const container=document.getElementById('resource-matrix');
+  container.innerHTML=`
+    <div style="overflow-x:auto;background:var(--surface);border-radius:12px;border:1px solid var(--border)">
+    <table class="compare-table">
+      <thead><tr>
+        <th style="min-width:120px;position:sticky;left:0;background:var(--surface);z-index:6">Model</th>
+        ${cats.map(c=>`<th>${c}</th>`).join('')}
+      </tr></thead>
+      <tbody>
+        ${models.map(m=>{
+          const byCat={};
+          (m.cmsLinks||[]).forEach(l=>{const c=l.cat||'Other';if(!byCat[c])byCat[c]=[];byCat[c].push(l);});
+          return `<tr>
+            <td style="position:sticky;left:0;background:var(--surface);z-index:5"><span style="color:${m.color};font-weight:600">${m.acronym}</span></td>
+            ${cats.map(c=>`<td style="font-size:11px;vertical-align:top">${(byCat[c]||[]).map(l=>`<div style="margin-bottom:3px"><a href="${l.url}" target="_blank" style="color:var(--accent);text-decoration:none;font-size:11px">${l.label}</a></div>`).join('')||'<span style="color:var(--border)">—</span>'}</td>`).join('')}
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table></div>`;
+}
+
+// Timeline
+function renderTimeline() {
+  const events=[
+    {date:'Dec 2025',title:'ACCESS, BALANCE, MAHA ELEVATE, LEAD Announced',desc:'CMS drops a cascade of new model announcements.',status:'past'},
+    {date:'Jan 1, 2026',title:'TEAM & WISeR Launch',desc:'Mandatory episode payments and AI-powered prior authorization go live.',status:'past'},
+    {date:'Jan 8, 2026',title:'BALANCE Manufacturer RFA Deadline',desc:'GLP-1 manufacturers submit applications for negotiated pricing.',status:'past'},
+    {date:'Feb 23, 2026',title:'GUARD & GLOBE Comment Period Closes',desc:'Public comments on international reference pricing.',status:'past'},
+    {date:'Mar 2026',title:'LEAD RFA Released',desc:'Application process opens for next-gen ACO model.',status:'past'},
+    {date:'Apr 13, 2026',title:'ACCESS Participant List Published',desc:'150+ organizations approved for the new Medicare architecture.',status:'past'},
+    {date:'May 2026',title:'BALANCE Medicaid Launch',desc:'States begin offering GLP-1 coverage under CMS-negotiated pricing.',status:'upcoming'},
+    {date:'May 15, 2026',title:'ACCESS & MAHA ELEVATE Deadlines',desc:'Final deadline for ACCESS July launch and ELEVATE Cohort 1.',status:'upcoming'},
+    {date:'May 17, 2026',title:'LEAD Application Deadline',desc:'ACOs must apply for Jan 2027 launch.',status:'upcoming'},
+    {date:'Mid-2026',title:'WISeR Gold Carding Pilot',desc:'High-performing providers exempt from future PA requirements.',status:'upcoming'},
+    {date:'Jul 5, 2026',title:'ACCESS Model Launches',desc:'150+ orgs begin tech-supported chronic care in Original Medicare.',status:'upcoming'},
+    {date:'Jul 2026',title:'Medicare GLP-1 Bridge',desc:'Medicare beneficiaries access GLP-1s at $50/month.',status:'upcoming'},
+    {date:'Sep 1, 2026',title:'MAHA ELEVATE Begins',desc:'First cohort launches lifestyle medicine clinical trials.',status:'upcoming'},
+    {date:'Jan 1, 2027',title:'LEAD, ASM Launch / BALANCE Part D',desc:'Next-gen ACO, specialist accountability, and full GLP-1 coverage go live.',status:'upcoming'},
+    {date:'Dec 31, 2031',title:'BALANCE & WISeR End',desc:'Five and six year models conclude.',status:'upcoming'},
+    {date:'Dec 31, 2036',title:'ACCESS & LEAD End',desc:'10-year models conclude.',status:'upcoming'}
+  ];
+  document.getElementById('timeline').innerHTML=events.map(e=>`
+    <div class="timeline-item">
+      <div class="timeline-dot ${e.status}"></div>
+      <div class="timeline-date">${e.date}</div>
+      <div class="timeline-title">${e.title}</div>
+      <div class="timeline-desc">${e.desc}</div>
+    </div>
+  `).join('');
+}
+
+// Role mappings — added to models after definition
+const roleMap = {
+  'role-aco': ['access','lead','team','ahead','asm'],
+  'role-digital': ['access','tempo','maha-elevate','balance','wiser'],
+  'role-hospital': ['team','ahead','asm','wiser','lead'],
+  'role-specialist': ['asm','team','wiser','lead'],
+  'role-primarycare': ['lead','access','balance'],
+  'role-pharma': ['balance','guard','generous'],
+  'role-state': ['ahead','balance','generous','aspire'],
+  'role-investor': ['access','lead','balance','maha-elevate','tempo'],
+  'role-device': ['tempo','access','wiser']
+};
+// Apply roles to models
+models.forEach(m=>{m.roles=[];for(const[role,ids]of Object.entries(roleMap)){if(ids.includes(m.id))m.roles.push(role);}});
+
+// Condition crosswalk data
+const conditions = [
+  {name:'Type 2 Diabetes',icon:'🩸',models:[
+    {id:'access',role:'eCKM and CKM tracks deliver tech-enabled chronic care management with outcome-based payments for A1c, blood pressure, lipid improvement'},
+    {id:'balance',role:'GLP-1 coverage for weight management with mandatory lifestyle support — nutrition and physical activity to address root metabolic causes'},
+    {id:'lead',role:'ACO-level total cost of care coordination including chronic disease management, care transitions, and preventive care'},
+    {id:'maha-elevate',role:'Clinical trials testing lifestyle and nutrition interventions that may prove effective for diabetes prevention and management'}
+  ]},
+  {name:'Obesity / Metabolic Syndrome',icon:'⚖️',models:[
+    {id:'balance',role:'CMS-negotiated GLP-1 pricing at $50/month for Medicare. Mandatory lifestyle support platform with nutrition and physical activity'},
+    {id:'access',role:'Cardiometabolic tracks manage related chronic conditions — hypertension, diabetes, high cholesterol'},
+    {id:'maha-elevate',role:'Federally funded clinical trials of lifestyle medicine interventions — nutrition or physical activity required in every trial'},
+    {id:'lead',role:'Prevention and Quality Plans incentivize ACOs to address upstream metabolic health'}
+  ]},
+  {name:'Heart Failure',icon:'❤️',models:[
+    {id:'asm',role:'Mandatory specialist accountability — cardiologists measured on total cost and quality outcomes against specialty peers'},
+    {id:'access',role:'CKM track covers technology-enabled heart failure management with remote monitoring and outcome-aligned payments'},
+    {id:'lead',role:'ACO coordination for heart failure patients including care transitions, readmission prevention, and high-needs population management'},
+    {id:'team',role:'CABG surgical episodes bundled — if a heart failure patient needs surgery, episode payment aligns the acute event'},
+    {id:'wiser',role:'Prior authorization for certain cardiac procedures to reduce inappropriate utilization'}
+  ]},
+  {name:'Depression / Anxiety',icon:'🧠',models:[
+    {id:'access',role:'Behavioral Health track pays for tech-enabled mental health care using validated PROMs for depression and anxiety outcomes'},
+    {id:'lead',role:'ACO-level behavioral health integration — care coordination across primary care and mental health settings'},
+    {id:'balance',role:'Lifestyle support platforms include behavioral health components alongside GLP-1 treatment'}
+  ]},
+  {name:'Chronic MSK Pain / Low Back Pain',icon:'🦴',models:[
+    {id:'asm',role:'Low back pain specialists held accountable for outcomes — performance measured against specialty peers'},
+    {id:'access',role:'MSK track delivers technology-enabled chronic pain management with outcome-aligned payments'},
+    {id:'team',role:'Spinal fusion and joint replacement episodes bundled when surgical intervention is needed'},
+    {id:'wiser',role:'Prior authorization for knee arthroscopy, spinal fusion, epidural steroid injections, nerve stimulator implants'}
+  ]},
+  {name:'Hypertension / High Cholesterol',icon:'💉',models:[
+    {id:'access',role:'eCKM and CKM tracks target early and advanced cardiometabolic conditions including blood pressure and lipid management'},
+    {id:'lead',role:'ACO-level cardiovascular risk management — prevention plans, quality measures, care coordination'},
+    {id:'balance',role:'GLP-1 treatment addresses underlying metabolic conditions that drive cardiovascular risk'}
+  ]},
+  {name:'Chronic Kidney Disease',icon:'🫘',models:[
+    {id:'access',role:'CKM track includes chronic kidney disease management — technology-enabled monitoring and outcome-based payments'},
+    {id:'lead',role:'ACO coordination for CKD patients — preventing progression, managing comorbidities, coordinating specialist care'}
+  ]},
+  {name:'High Drug Costs',icon:'💊',models:[
+    {id:'balance',role:'CMS-negotiated GLP-1 pricing — $50/month for Medicare beneficiaries. Manufacturer-funded lifestyle support'},
+    {id:'guard',role:'International reference pricing for Medicare Part D drugs via modified inflation rebates'},
+    {id:'generous',role:'International pricing-based supplemental rebates for Medicaid drug spending'}
+  ]},
+  {name:'Pediatric Complex Care',icon:'👶',models:[
+    {id:'aspire',role:'Dedicated pediatric model for children with complex medical needs in Medicaid/CHIP — up to 5 states'}
+  ]},
+  {name:'Fraud, Waste & Abuse',icon:'🔍',models:[
+    {id:'wiser',role:'AI/ML-powered prior authorization in traditional Medicare — 13 procedure categories across 6 states. Tech companies are the participants'}
+  ]}
+];
+
+function renderConditionCrosswalk() {
+  const btns=document.getElementById('condition-buttons');
+  btns.innerHTML=conditions.map((c,i)=>`<button class="filter-chip condition-btn ${i===0?'active':''}" data-idx="${i}">${c.icon} ${c.name}</button>`).join('');
+  
+  function showCondition(idx) {
+    const c=conditions[idx];
+    const results=document.getElementById('condition-results');
+    results.innerHTML=`
+      <div style="font-size:24px;margin-bottom:4px">${c.icon}</div>
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px">${c.name}</h3>
+      <div style="display:grid;gap:12px">
+        ${c.models.map(cm=>{
+          const m=models.find(x=>x.id===cm.id);
+          return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;border-left:3px solid ${m.color};cursor:pointer" onclick="document.querySelector('.nav-btn[data-tab=explorer]').click();setTimeout(()=>showDetail('${m.id}'),100)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <span style="font-family:var(--font-mono);font-size:16px;font-weight:700;color:${m.color}">${m.acronym}</span>
+              <span class="card-status ${m.status}" style="display:inline-block">${m.statusLabel}</span>
+            </div>
+            <div style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:8px">${cm.role}</div>
+            <div style="font-size:11px;color:var(--text-muted)">→ Click to view full model details</div>
+          </div>`;
+        }).join('')}
+      </div>`;
+  }
+  
+  showCondition(0);
+  document.querySelectorAll('.condition-btn').forEach(btn=>btn.addEventListener('click',()=>{
+    document.querySelectorAll('.condition-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    showCondition(parseInt(btn.dataset.idx));
+  }));
+}
+
+function renderLandscape() {
+  const participants=['Providers / ACOs','Digital Health / Tech','Hospitals','Drug Manufacturers','States','Specialists'];
+  const targets=['Chronic Disease Mgmt','Drug Pricing','Surgical Episodes','Program Integrity','Population Health','Pediatric','Regulatory'];
+  
+  const grid={};
+  const placements=[
+    {id:'access',p:'Digital Health / Tech',t:'Chronic Disease Mgmt'},
+    {id:'access',p:'Providers / ACOs',t:'Chronic Disease Mgmt'},
+    {id:'tempo',p:'Digital Health / Tech',t:'Regulatory'},
+    {id:'maha-elevate',p:'Providers / ACOs',t:'Chronic Disease Mgmt'},
+    {id:'lead',p:'Providers / ACOs',t:'Population Health'},
+    {id:'balance',p:'Drug Manufacturers',t:'Drug Pricing'},
+    {id:'balance',p:'States',t:'Chronic Disease Mgmt'},
+    {id:'guard',p:'Drug Manufacturers',t:'Drug Pricing'},
+    {id:'generous',p:'Drug Manufacturers',t:'Drug Pricing'},
+    {id:'generous',p:'States',t:'Drug Pricing'},
+    {id:'team',p:'Hospitals',t:'Surgical Episodes'},
+    {id:'ahead',p:'Hospitals',t:'Population Health'},
+    {id:'ahead',p:'States',t:'Population Health'},
+    {id:'asm',p:'Specialists',t:'Chronic Disease Mgmt'},
+    {id:'asm',p:'Specialists',t:'Surgical Episodes'},
+    {id:'wiser',p:'Digital Health / Tech',t:'Program Integrity'},
+    {id:'aspire',p:'States',t:'Pediatric'}
+  ];
+  placements.forEach(pl=>{const k=pl.p+'||'+pl.t;if(!grid[k])grid[k]=[];if(!grid[k].includes(pl.id))grid[k].push(pl.id);});
+
+  const container=document.getElementById('landscape-grid');
+  container.innerHTML=`
+    <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;min-width:900px">
+      <thead>
+        <tr>
+          <th style="padding:12px;font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);text-align:left;border-bottom:2px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:2">Who Participates ↓ / What It Targets →</th>
+          ${targets.map(t=>`<th style="padding:10px 8px;font-family:var(--font-mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);text-align:center;border-bottom:2px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:2;min-width:110px">${t}</th>`).join('')}
+        </tr>
+      </thead>
+      <tbody>
+        ${participants.map(p=>`
+          <tr>
+            <td style="padding:12px;font-size:13px;font-weight:600;border-bottom:1px solid var(--border);background:var(--surface-2);white-space:nowrap">${p}</td>
+            ${targets.map(t=>{
+              const k=p+'||'+t;
+              const ids=grid[k]||[];
+              return `<td style="padding:8px;text-align:center;border-bottom:1px solid var(--border);vertical-align:middle">
+                ${ids.length>0?ids.map(id=>{const m=models.find(x=>x.id===id);return `<span style="display:inline-block;padding:3px 8px;margin:2px;border-radius:4px;font-family:var(--font-mono);font-size:10px;font-weight:700;background:${m.color}20;color:${m.color};border:1px solid ${m.color}40;cursor:pointer" onclick="document.querySelector('.nav-btn[data-tab=explorer]').click();setTimeout(()=>showDetail('${m.id}'),100)">${m.acronym}</span>`;}).join(''):'<span style="color:var(--border);font-size:11px">—</span>'}
+              </td>`;
+            }).join('')}
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:11px;color:var(--text-muted);margin-top:12px">Click any model tag to view full details. Some models appear in multiple cells because they involve multiple participant types or target areas.</p>`;
+}
+
+// Nav
+document.querySelectorAll('.nav-btn').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+}));
+
+// Filters
+document.querySelectorAll('.filter-chip[data-filter]').forEach(chip=>chip.addEventListener('click',()=>{
+  document.querySelectorAll('.filter-chip[data-filter]').forEach(c=>c.classList.remove('active'));
+  chip.classList.add('active');
+  document.getElementById('detail-panel').classList.remove('visible');
+  renderGrid(chip.dataset.filter);
+}));
+
+// Init
+renderGrid();
+renderCompare();
+renderTimeline();
+renderConditionCrosswalk();
+renderLandscape();
+renderResourceMatrix();
+
+// Model shortcut buttons
+const shortcuts=document.getElementById('model-shortcuts');
+shortcuts.innerHTML=models.map(m=>`<button class="filter-chip model-shortcut" data-model="${m.id}" style="border-color:${m.color}40;color:${m.color}">${m.acronym}</button>`).join('');
+document.querySelectorAll('.model-shortcut').forEach(btn=>btn.addEventListener('click',()=>{
+  // Reset category filters to "All"
+  document.querySelectorAll('.filter-chip[data-filter]').forEach(c=>c.classList.remove('active'));
+  document.querySelector('.filter-chip[data-filter="all"]').classList.add('active');
+  renderGrid('all');
+  showDetail(btn.dataset.model);
+}));
+</script>
+</body>
+</html>
